@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="panel-heading container-fluid">
+<div class="panel-heading">
 	<div class="form-group">
 		<a class="btn btn-info btn-xs col-md-1 col-sm-2 col-xs-2" href="{{route('bunch.index')}}">
 			<i class="fa fa-backward" aria-hidden="true"></i> Back
@@ -23,12 +23,14 @@
 		<tr>
 			<td colspan="2">
 				<h4>Subscribers</h4>
-				@foreach($item->subscribers as $subscriber)
-				<p>
-				Name: <strong>{{ $subscriber->name }}</strong> 
-				Email: <i>{{ $subscriber->email }}</i>
-				</p>
-				@endforeach
+				@if ( $item->subscribers()->exists() )
+					@foreach($item->subscribers as $subscriber)
+					<p>
+					Name: <strong>{{ $subscriber->name }}</strong> 
+					Email: <i>{{ $subscriber->email }}</i>
+					</p>
+					@endforeach
+				@endif
 			</td>
 		</tr>
 		<tr>

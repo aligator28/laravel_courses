@@ -6,6 +6,7 @@ use App\Bunch;
 use Illuminate\Http\Request;
 use App\Http\Requests\BunchRequest;
 use App\Subscriber;
+use Hash;
 
 class BunchController extends Controller
 {   
@@ -63,6 +64,7 @@ class BunchController extends Controller
      */
     public function show($id)
     {
+
         $item = Bunch::owned()->findOrFail($id);
         return view($this->view_folder . '.show', compact('item'));
     }
@@ -116,16 +118,23 @@ class BunchController extends Controller
         return redirect()->route($this->view_folder . '.index');
     }
 
-    // private function getSelectedSubscribers($item, $subscribers) {
-        
-    //     $item_subs = $item->subscribers->pluck('name', 'id')->toArray();
-    //     $selected_subs = [];
-        
-    //     foreach ($subscribers as $key => $val) {
-    //         if (array_key_exists($key, $item_subs)) {
-    //             $selected_subs[] = $key;
-    //         }
-    //     }
-    //     return $selected_subs;
-    // }
+    public function unsubscribe($id, $subscriber_id)
+    {
+        $hash = $_GET['hash'];
+
+        $bunch = Bunch::findOrFail($id);
+        $subscriber = $bunch->subscribers()->where('hash', $hash)->findOrFail($subscriber_id);
+
+        if ( $subscriber->hash != $hash) {
+            abort(403);
+        }
+
+        Bunch::findOrFail($id)
+            ->subscribers()
+            ->detach($subscriber_id);
+
+        return view($this->view_folder . '.unsubscribe', compact('bunch'));
+
+    }
+
 }

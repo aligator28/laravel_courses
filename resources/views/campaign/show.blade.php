@@ -2,7 +2,8 @@
 
 @section('content')
 
-<div class="panel-heading container-fluid">
+<div class="container">
+<div class="panel-heading">
 	<div class="form-group">
 		<a class="btn btn-info btn-xs col-md-1 col-sm-2 col-xs-2" href="{{route('campaign.index')}}">
 			<i class="fa fa-backward" aria-hidden="true"></i> back
@@ -24,6 +25,7 @@
 		<li><span>To</span>
 			<span>
 			{{-- @foreach ($item->bunches as $bunch) --}}
+			@if ($item->bunch->subscribers()->exists())
 				@foreach ( $item->bunch->subscribers as $key => $subscriber )
 					@if ( $key > 199 ) 
 						...
@@ -33,10 +35,16 @@
 					<strong>{{ $subscriber->email }}, </strong>
 				@endforeach
 			{{-- @endforeach --}}
+			@endif
 			</span>
 		</li>
 		<li>From <strong>emailfrom@gmail.com</strong></li>
+		@if ( $item->template()->exists() )
 		<li>Message <strong> {!! $item->template->content !!} </strong></li>
+		@else 
+		no template defined
+		@endif
 	</ul>
+</div>
 </div>
 @endsection

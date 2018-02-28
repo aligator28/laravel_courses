@@ -1,4 +1,5 @@
 <?php
+// require 'vendor/autoload.php';
 
 namespace App\Http\Controllers;
 
@@ -6,12 +7,16 @@ use App\Campaign;
 use Illuminate\Http\Request;
 use App\Http\Requests\CampaignRequest;
 use App\Bunch;
+use App\Report;
 use App\Template;
 use Mail;
 use Log;
 use Illuminate\Support\Facades\Artisan;
+use Hash;
 
 use App\Jobs\SendCampaign;
+
+use Mailgun\Mailgun;
 
 class CampaignController extends Controller
 {
@@ -28,66 +33,77 @@ class CampaignController extends Controller
     {
         // Artisan::call('queue:listen');
 
-        $campaign = Campaign::where('sent', '=', 0)->findOrFail($id);
-        $html = $campaign->template->content;
-        $emails = [];
-
+        $campaign = Campaign::where('sent', 0)->findOrFail($id);
+        $data = [];
+     
         foreach ($campaign->bunch->subscribers as $subscriber) {
-            $emails[] = $subscriber->email;
-        }
 
+            $content = $this->replaceTags($campaign, $subscriber);
+            // dd($content);
 
-        Mail::send( [], [], function ($message) use ($html, $emails) { 
+            $data['html'] = $content;
+            $data['email'] = $subscriber->email;
+            $data['id'] = $id;
 
-          $message->to( $emails )
-            ->subject('Some other')
-            ->from( config('mail.from.address'), config("app.name") )
-            ->setBody($html, 'text/html');
-        });
+            try { 
+                $mail = Mail::send( [], [], function ($message) use ($data) { 
+                  $message
+                    ->to( $data['email'] )
+                    ->subject('New')
+                    ->from( config('mail.from.address'), config("app.name") )
+                    ->setBody($data['html'], 'text/html');
 
-        if( count(Mail::failures()) > 0 ) {
+                    $headers = $message->getHeaders();
+                    $headers->addTextHeader('X-Mailgun-Tag', 'campaign_' . $data['id']);
+                    $headers->addTextHeader('X-Mailgun-Track-Opens', 'yes');
+                    // $headers->addTextHeader('X-Reply-To', config('mail.from.address') );
+                    // $message->getSwiftMessage()->getId()
+                    // dd(  $message->getSwiftMessage()->getId()  );
+                });
 
-           echo "There was one or more failures. They were: <br />";
-
-           foreach(Mail::failures() as $email_address) {
-               echo " - $email_address <br />";
+                $campaign->sent = 1;
+                $campaign->save();
+            } 
+            catch(\Exception $e) {
+                $errors['mail_error'] = $e->getMessage();
+                return redirect()->back()->withErrors( $errors['mail_error'] );
             }
-
-        } 
-        else {
-            $campaign->sent = 1;
-            $campaign->save();
-
-            echo "No errors, all sent successfully!";
         }
+
+ 
+        // if( count(Mail::failures()) > 0 ) {
+        //    foreach(Mail::failures() as $email_address) {
+        //        echo " - $email_address <br />";
+        //     }
+        // } 
+        // else {
+        //     // echo "No errors, all sent successfully!";
+
+        // }
         
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index', compact('errors') );
 
         // Log::info("Request Cycle with Queues Begins");
         // $this->dispatch(new SendCampaign($id));
         // Log::info("Request Cycle with Queues Ends");
 
-        // $campaign = Campaign::findOrFail($id);
-        // $html = $campaign->template->content;
-        // $emails = [];
-
-        // foreach ($campaign->bunches as $bunch) {
-        //     foreach ($bunch->subscribers as $subscriber) {
-        //         $emails[] = $subscriber->email;
-        //         dump($subscriber->email);
-        //     }
-        // }
-        // dd();
-
-
-        // Mail::send( [], [], function ($message) use ($html) {
-        //   $message->to('pluta.pluta.pluta@gmail.com')
-        //     ->subject('Pliuta Oleh Campaign')
-        //     ->from( config('mail.from.address'), config("app.name") )
-        //     ->setBody($html, 'text/html');
-        // });
-
     }
+
+    private function replaceTags($campaign, $subscriber)
+    {
+        $content = $campaign->template->content;
+
+        $content = str_replace('[FNAME]', $subscriber->name, $content);
+        $content = str_replace('[LNAME]', $subscriber->surname, $content);
+        $content = str_replace(
+            '[UNSUBSCRIBE]', 
+            url('bunch/unsubscribe/' . $campaign->bunch->id . '/subscriber/' . $subscriber->id . '?hash=' . $subscriber->hash), 
+            $content
+        );
+
+        return $content;
+    }
+
     
     public function index(Campaign $item)
     {
@@ -118,24 +134,24 @@ class CampaignController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Campaign $campaign, Bunch $bunch, Template $template, CampaignRequest $request)
+    public function store(Campaign $campaign, CampaignRequest $request)
     {
 
         // just create campaign (table do not have fields bunch_id and template_id)
         $inserted_campaign = $campaign
-            ->create( $request->except( ['bunch_id', 'template_id'] ) );
+            ->create( $request->all() );//except( ['bunch_id', 'template_id'] ) );
 
-        $campaign
-            ->findOrFail($inserted_campaign->id)   
-            ->bunch()
-            ->associate( $bunch->find($request->bunch_id) )
-            ->save();
+        // $campaign
+        //     ->findOrFail($inserted_campaign->id)   
+        //     ->bunch()
+        //     ->associate( $bunch->find($request->bunch_id) )
+        //     ->save();
 
-        $campaign
-            ->findOrFail($inserted_campaign->id)
-            ->template()
-            ->associate( $template->find($request->template_id) )
-            ->save();
+        // $campaign
+        //     ->findOrFail($inserted_campaign->id)
+        //     ->template()
+        //     ->associate( $template->find($request->template_id) )
+        //     ->save();
 
 
         return redirect()->route($this->view_folder . '.index');

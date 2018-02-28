@@ -7,11 +7,17 @@ use Illuminate\Support\ServiceProvider;
 use App\Observers\CampaignObserver;
 use App\Campaign;
 
+use App\Observers\ReportObserver;
+use App\Report;
+
 use App\Observers\BunchObserver;
 use App\Bunch;
 
 use App\Observers\TemplateObserver;
 use App\Template;
+
+use App\Observers\SubscriberObserver;
+use App\Subscriber;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
         Campaign::observe(CampaignObserver::class);
         Bunch::observe(BunchObserver::class);
         Template::observe(TemplateObserver::class);
+        Subscriber::observe(SubscriberObserver::class);
+        Report::observe(ReportObserver::class);
     }
 
     /**
@@ -34,6 +42,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        return \Http\Adapter\Guzzle6\Client::createWithConfig([ ]);
     }
 }

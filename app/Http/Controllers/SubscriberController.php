@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Bunch;
+use App\Http\Requests\SubscriberRequest;
 use App\Subscriber;
 use Illuminate\Http\Request;
-use App\Http\Requests\SubscriberRequest;
 
 class SubscriberController extends Controller
 {
@@ -48,9 +49,14 @@ class SubscriberController extends Controller
      * @param  \App\Subscriber  $template
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($first_id, $second_id = '')
     {
-        $item = Subscriber::findOrFail($id);
+        if ($second_id != '') {
+            $item = Bunch::find($first_id)->subscribers->find($second_id);
+        }
+        else {
+            $item = Subscriber::findOrFail($first_id);
+        }
         return view($this->view_folder . '.show', compact('item'));
     }
 

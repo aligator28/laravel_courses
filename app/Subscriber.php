@@ -11,7 +11,7 @@ class Subscriber extends Model
 {
 	use SoftDeletes, Selectable;
 
-    protected $fillable = ['name', 'surname', 'email'];
+    protected $fillable = ['name', 'surname', 'email', 'hash'];
 
     public function bunches()
 	{

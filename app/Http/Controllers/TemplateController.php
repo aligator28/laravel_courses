@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Template;
 use Illuminate\Http\Request;
 use App\Http\Requests\TemplateRequest;
+use DB;
 
 class TemplateController extends Controller
 {
@@ -40,6 +41,7 @@ class TemplateController extends Controller
     public function store(Template $item, TemplateRequest $request)
     {
         $item->create($request->all());
+
         return redirect()->route($this->view_folder . '.index');
     }
 

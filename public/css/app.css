@@ -8383,7 +8383,7 @@ button.bg-dark:focus {
 
 .pt-4,
 .py-4 {
-  padding-top: 1.5rem !important;
+  /*padding-top: 1.5rem !important;*/
 }
 
 .pr-4,
@@ -9994,11 +9994,6 @@ a.text-dark:focus {
   }
 }
 
-.navbar-laravel {
-  background-color: #fff;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
 
 .table tr {
   -webkit-transition: background-color, .8s;
@@ -10025,7 +10020,7 @@ a.text-dark:focus {
   height: 100%;
   background-color: rgba(255,255,255, .5);
 }
-.sand-bg .container {
+.sand-bg .container, .sand-bg .container-fluid {
   position: relative;
   top: 70px;
   left: 0;
@@ -10039,4 +10034,22 @@ a.text-dark:focus {
 
 .main-row {
   margin-bottom: 10%;
+}
+
+a {
+  color: #fff;
+}
+
+.navbar-laravel {
+  background-color: rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.nav-item a {
+  transition: all .8s;
+}
+.nav-item a:hover {
+  background: #fff;
+  color: #333;
 }

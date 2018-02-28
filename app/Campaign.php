@@ -12,7 +12,7 @@ class Campaign extends Model
 {
 	use SoftDeletes, Selectable, GetSelected;
   
-    protected $fillable = ['name', 'descr', 'created_by', 'sent'];
+    protected $fillable = ['name', 'descr', 'created_by', 'sent', 'bunch_id', 'template_id'];
 
     public function bunch()
     {
@@ -24,6 +24,11 @@ class Campaign extends Model
        return $this->belongsTo(Template::class);
     }
     
+    public function report()
+    {
+       return $this->hasOne(Report::class);
+    }
+
     public function scopeOwned($query) {
       return $query->where('created_by', Auth::user()->id);
     }

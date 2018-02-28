@@ -26,7 +26,7 @@ class SubscriberRequest extends FormRequest
         return [
             'name' => 'required|min:2|max:45',
             'surname' => 'required|min:2',
-            'email' => 'required|email|unique:subscribers,email|min:5',
+            'email' => 'required|email|min:5',
         ];
     }
 }
