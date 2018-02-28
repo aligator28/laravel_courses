@@ -16,19 +16,19 @@ return [
      * Domain name registered with Mailgun
      *
      */
-    'domain' => 'sandboxf8045cd38e7440d39d06242b18390e88.mailgun.org',
+    'domain' => '',
 
     /*
      * Mailgun (private) API key
      *
      */
-    'api_key' => 'key-7f22bed236f3fd39a03014f50c69f8d7',
+    'api_key' => '',
 
     /*
      * Mailgun public API key
      *
      */
-    'public_api_key' => 'pubkey-391b044d79a9aacb76204dae39f2ab9f',
+    'public_api_key' => '',
 
     /*
      * You may wish for all e-mails sent with Mailgun to be sent from
