@@ -42,7 +42,7 @@ class TemplateController extends Controller
     {
         $item->create($request->all());
 
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully created');
     }
 
     /**
@@ -79,7 +79,7 @@ class TemplateController extends Controller
     public function update(TemplateRequest $request, Template $item, $id)
     {
         $item->findOrFail($id)->update($request->all());
-        return redirect()->route( $this->view_folder . '.index' );
+        return redirect()->route( $this->view_folder . '.index' )->with('message', 'Successfully updated');
     }
 
     /**
@@ -91,6 +91,6 @@ class TemplateController extends Controller
     public function destroy(Template $template)
     {
         $template->delete();
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully deleted');
     }
 }

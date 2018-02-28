@@ -5,6 +5,8 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3>Campaigns</h3></div>
+				@include('partials.success')
+
 				<div class="panel-body">
 					<div class="row centered-child">
 						<div class="col-md-12">

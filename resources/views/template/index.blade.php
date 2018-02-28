@@ -10,6 +10,7 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3>Templates</h3></div>
+				@include('partials.success')
 				<div class="panel-body">
 					{{ link_to_route('template.create', 'create', null, ['class' => 'btn btn-info btn-xs']) }}
 					<table class="table table-bordered table-responsive table-striped">

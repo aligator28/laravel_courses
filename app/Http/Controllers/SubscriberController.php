@@ -40,7 +40,7 @@ class SubscriberController extends Controller
     public function store(Subscriber $item, SubscriberRequest $request)
     {
         $item->create($request->all());
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully created');
     }
 
     /**
@@ -82,7 +82,7 @@ class SubscriberController extends Controller
     public function update(SubscriberRequest $request, Subscriber $item, $id)
     {
         $item->findOrFail($id)->update($request->all());
-        return redirect()->route( $this->view_folder . '.index' );
+        return redirect()->route( $this->view_folder . '.index' )->with('message', 'Successfully updated');
     }
 
     /**
@@ -94,6 +94,6 @@ class SubscriberController extends Controller
     public function destroy(Subscriber $subscriber)
     {
         $subscriber->delete();
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully deleted');
     }
 }

@@ -53,7 +53,7 @@ class BunchController extends Controller
             ->subscribers()
             ->sync($request->subscriber_id);
 
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully created');
     }
 
     /**
@@ -103,7 +103,7 @@ class BunchController extends Controller
 
         // $item->find($id)->update($request->except('subscriber_id'));
 
-        return redirect()->route( $this->view_folder . '.index' );
+        return redirect()->route( $this->view_folder . '.index' )->with('message', 'Successfully updated');
     }
 
     /**
@@ -115,7 +115,7 @@ class BunchController extends Controller
     public function destroy(Bunch $bunch)
     {
         $bunch->delete();
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully deleted');
     }
 
     public function unsubscribe($id, $subscriber_id)

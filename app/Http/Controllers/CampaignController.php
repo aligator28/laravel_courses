@@ -154,7 +154,7 @@ class CampaignController extends Controller
         //     ->save();
 
 
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully created');
     }
 
     /**
@@ -224,7 +224,7 @@ class CampaignController extends Controller
             ->save();
 
         // $item->findOrFail($id)->update($request->all());
-        return redirect()->route( $this->view_folder . '.index' );
+        return redirect()->route( $this->view_folder . '.index' )->with('message', 'Successfully updated');
     }
 
     /**
@@ -236,6 +236,6 @@ class CampaignController extends Controller
     public function destroy(Campaign $campaign)
     {
         $campaign->delete();
-        return redirect()->route($this->view_folder . '.index');
+        return redirect()->route($this->view_folder . '.index')->with('message', 'Successfully deleted');
     }
 }
